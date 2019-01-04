@@ -210,4 +210,14 @@ application.secret_key = 'Add your secret key'
   * `sudo pip install Flask-SQLAlchemy`
   * `sudo pip install flask-seasurf`
 
+5. Postgresql
 
+* `sudo apt-get install postgresql postgresql-contrib`
+* enter to user postgres: `sudo su - postgre`
+* connect to the system: `psql` (remember all senteses here must end with ';') 
+* now you can create databases! use `CREATE USER catalog WITH PASSWORD 'catalog-pw';` to create the user
+* give permissions to create database to the user with `ALTER USER catalog CREATEDB;`
+* create the database using `CREATE DATABASE catalog WITH OWNER catalog;`
+* connect using `\c catalog` (alt+92 ='\')
+* revoke all access: `REVOKE ALL ON SCHEMA public FROM public;`
+* grant access to catalog: `GRANT ALL ON SCHEMA public TO catalog;`
