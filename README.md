@@ -96,12 +96,12 @@ now restart ssh again with `sudo service ssh restart`
 
 ### Install and configure
 
-1_ Apache
+1. Apache
 ~~~
 sudo apt-get install apache2   <-- check your localhost:8080 to see the apache ubuntu default page
 ~~~
 
-2_ mod_wsgi
+2. mod_wsgi
 ~~~
 sudo apt-get install libapache2-mod-wsgi
 ~~~
@@ -126,4 +126,88 @@ def application(environ, start_response):
 
     return [output]
 ~~~
- ***WARNING*** maybe you will need to delete the content from the ubuntu apache2 default page to see the hello world!, edit it with the command `sudo nano /var/www/html/index.html`
+ ***WARNING*** maybe you will need to delete the content from the ubuntu apache2 default page to see the hello world!, edit it with the command `sudo nano /var/www/html/index.html`, After saving this file you can reload http://localhost:8080 to see your application run in all its glory!
+ 
+3. Install Git using `sudo apt-get install git`
+
+4. Deploy Flaks application
+~~~
+sudo apt-get install python-dev
+~~~
+* To enable mo_wsgi run `sudo a2enmod wsgi`
+
+* Move to www directory using  `cd /var/www` and create the project directory `sudo mkdir catalog`
+* `cd catalog` to move into and create a subdirectory with the same name `sudo mkdir catalog`
+* Move into it again using `cd catalog` and create templates using `sudo mkdir static templates`
+* Create a logic flask application using `sudo nano __init__.py` and add;
+~~~
+from flask import Flask
+app = Flask(__name__)
+@app.route("/")
+def hello():
+    return "Hello, everyone!"
+if __name__ == "__main__":
+    app.run()
+~~~
+close and save the file.
+
+* Now we need to install virtualenv, python pip, flask and set enviroments
+~~~
+sudo apt-get install python-pip
+sudo pip install virtualenv
+sudo virtualenv venv
+source venv/bin/activate
+sudo pip install Flask
+~~~
+* run `sudo python __init__.py` if you see a message like " Running on ... " you configurate successfully your app.
+* desactive the environment: `deactivate`
+
+* Run `sudo nano /etc/apache2/sites-available/FlaskApp.conf` and write;
+~~~
+<VirtualHost *:80>
+        ServerName mywebsite.com
+        ServerAdmin admin@mywebsite.com
+        WSGIScriptAlias / /var/www/FlaskApp/flaskapp.wsgi
+        <Directory /var/www/FlaskApp/FlaskApp/>
+            Order allow,deny
+            Allow from all
+        </Directory>
+        Alias /static /var/www/FlaskApp/FlaskApp/static
+        <Directory /var/www/FlaskApp/FlaskApp/static/>
+            Order allow,deny
+            Allow from all
+        </Directory>
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        LogLevel warn
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+~~~
+save and exit the file.
+
+* Enable virtual host using `sudo a2ensite FlaskAApp`
+
+* Create on `cd /var/www/catalog` a wsgi file `sudo nano catalog.wsgi` and write;
+~~~
+#!/usr/bin/python
+import sys
+import logging
+logging.basicConfig(stream=sys.stderr)
+sys.path.insert(0,"/var/www/FlaskApp/")
+
+from FlaskApp import app as application
+application.secret_key = 'Add your secret key'
+~~~
+
+* restart apache with; `sudo service apache2 restart`
+
+* Install more packages
+  * `sudo pip install httplib2`
+  * `sudo pip install requests`
+  * `sudo pip install oauth2client`
+  * `sudo pip install sqlalchemy`
+  * `sudo pip install sqlalchemy_utils`
+  * `sudo pip install psycopg2` 
+  * `sudo pip install Flask-SQLAlchemy`
+  * `sudo pip install flask-seasurf`
+
+
