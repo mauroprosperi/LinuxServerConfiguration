@@ -20,9 +20,7 @@ A deep understanding of exactly what your web applications are doing, how they a
     - Log in
     - Create an instance
     - Choose an instance image: Ubuntu
-    - Choose your instance plan (any tier works)
-    - Give your instance a hostname
-    - Wait for startup, then follow the instructions provide to SSH into your server.
+    - Follow the instructions provide to SSH into your server.
     
   
 ### Security
@@ -36,8 +34,6 @@ A deep understanding of exactly what your web applications are doing, how they a
  * Configure the Uncomplicated Firewall (UFW)
  ~~~
   sudo ufw status                     <-- to check firewall status
-  sudo ufw allow 22/tpc
-  sudo ufw allow 2222/tpc
   sudo ufw allow 2200/tcp
   sudo ufw allow 80/tcp
   sudo ufw allow 123/tcp
@@ -49,7 +45,6 @@ A deep understanding of exactly what your web applications are doing, how they a
  ~~~
  sudo nano /etc/ssh/sshd_config
  ~~~
- now restart ssh with `sudo service ssh restart`
  
 ### User configuration
  
@@ -72,152 +67,38 @@ A deep understanding of exactly what your web applications are doing, how they a
  sudo dpkg-reconfigure tzdata
  ~~~
  
- ***Outside of our virtual machine*** create a SSH key pair for grader using the ssh-keygen tool.
+ create a SSH key pair for grader using the ssh-keygen tool.
  ~~~
  ssh-keygen -t rsa
  ~~~
- 
- ***again on your virtual machine*** create the files to storage the key
- ~~~
- cd ~                          <-- to put our command line on root
- mkdir .ssh
- touch .ssh/authorized_keys
- nano .ssh/authorized_keys     <-- copy the public key generated on your local machine here, all the content.
- ~~~
- 
- * Change permissions
- ~~~
- chmod 700 .ssh
- chmod 644 .ssh/authorized_keys
- ~~~
+
 now restart ssh again with `sudo service ssh restart`
 
-* You can now login as `ssh grader@127.0.0.1 -p 2222 -i ~/.ssh/linuxCourse`
+* You can now login as `ssh -i .ssh/grader grader@34.210.194.203 -p 2200`
 
 ### Install and configure
 
-1. Apache
-~~~
-sudo apt-get install apache2   <-- check your localhost:8080 to see the apache ubuntu default page
-~~~
+* Ngnix
 
-2. mod_wsgi
-~~~
-sudo apt-get install libapache2-mod-wsgi
-~~~
+We use ngnix instead of Apache, configuration steps can be found here
 
-* Configure apache to handle request using WSGI module
-~~~
-sudo nano /etc/apache2/sites-enabled/000-default.conf
-~~~
+[ngix tutorial][2]
 
-* For now, add the following line at the end of the `<VirtualHost *:80>` block, right before the closing `</VirtualHost>` line: `WSGIScriptAlias / /var/www/html/myapp.wsgi`
+[2]:https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-16-04
 
-* restart Apache with `sudo apache2ctl restart` ( you might get a warning, ignore for now)
+* Postgresql
+`sudo apt-get install postgresql`
 
-* Test if you have your Apache configuration right create a wsgi file using `sudo nano /var/www/html/myapp.wsgi` and write:
-~~~
-def application(environ, start_response):
-    status = '200 OK'
-    output = 'Hello World!'
+* Remove remote connections
 
-    response_headers = [('Content-type', 'text/plain'), ('Content-Length', str(len(output)))]
-    start_response(status, response_headers)
+Create a new database with limited permission on your catalog application dabase.
 
-    return [output]
-~~~
- ***WARNING*** maybe you will need to delete the content from the ubuntu apache2 default page to see the hello world!, edit it with the command `sudo nano /var/www/html/index.html`, After saving this file you can reload http://localhost:8080 to see your application run in all its glory!
- 
-3. Install Git using `sudo apt-get install git`
+` https://help.ubuntu.com/community/PostgreSQL`
 
-4. Deploy Flaks application
-~~~
-sudo apt-get install python-dev
-~~~
-* To enable mo_wsgi run `sudo a2enmod wsgi`
+or
 
-* Move to www directory using  `cd /var/www` and create the project directory `sudo mkdir catalog`
-* `cd catalog` to move into and create a subdirectory with the same name `sudo mkdir catalog`
-* Move into it again using `cd catalog` and create templates using `sudo mkdir static templates`
-* Create a logic flask application using `sudo nano __init__.py` and add;
-~~~
-from flask import Flask
-app = Flask(__name__)
-@app.route("/")
-def hello():
-    return "Hello, everyone!"
-if __name__ == "__main__":
-    app.run()
-~~~
-close and save the file.
+STEP BY STEP COMMING SOON..
 
-* Now we need to install virtualenv, python pip, flask and set enviroments
-~~~
-sudo apt-get install python-pip
-sudo pip install virtualenv
-sudo virtualenv venv
-source venv/bin/activate
-sudo pip install Flask
-~~~
-* run `sudo python __init__.py` if you see a message like " Running on ... " you configurate successfully your app.
-* desactive the environment: `deactivate`
+### Deploy the catalog project.
 
-* Run `sudo nano /etc/apache2/sites-available/FlaskApp.conf` and write;
-~~~
-<VirtualHost *:80>
-        ServerName mywebsite.com
-        ServerAdmin admin@mywebsite.com
-        WSGIScriptAlias / /var/www/FlaskApp/flaskapp.wsgi
-        <Directory /var/www/FlaskApp/FlaskApp/>
-            Order allow,deny
-            Allow from all
-        </Directory>
-        Alias /static /var/www/FlaskApp/FlaskApp/static
-        <Directory /var/www/FlaskApp/FlaskApp/static/>
-            Order allow,deny
-            Allow from all
-        </Directory>
-        ErrorLog ${APACHE_LOG_DIR}/error.log
-        LogLevel warn
-        CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
-~~~
-save and exit the file.
-
-* Enable virtual host using `sudo a2ensite FlaskAApp`
-
-* Create on `cd /var/www/catalog` a wsgi file `sudo nano catalog.wsgi` and write;
-~~~
-#!/usr/bin/python
-import sys
-import logging
-logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0,"/var/www/FlaskApp/")
-
-from FlaskApp import app as application
-application.secret_key = 'Add your secret key'
-~~~
-
-* restart apache with; `sudo service apache2 restart`
-
-* Install more packages
-  * `sudo pip install httplib2`
-  * `sudo pip install requests`
-  * `sudo pip install oauth2client`
-  * `sudo pip install sqlalchemy`
-  * `sudo pip install sqlalchemy_utils`
-  * `sudo pip install psycopg2` 
-  * `sudo pip install Flask-SQLAlchemy`
-  * `sudo pip install flask-seasurf`
-
-5. Postgresql
-
-* `sudo apt-get install postgresql postgresql-contrib`
-* enter to user postgres: `sudo su - postgre`
-* connect to the system: `psql` (remember all senteses here must end with ';') 
-* now you can create databases! use `CREATE USER catalog WITH PASSWORD 'catalog-pw';` to create the user
-* give permissions to create database to the user with `ALTER USER catalog CREATEDB;`
-* create the database using `CREATE DATABASE catalog WITH OWNER catalog;`
-* connect using `\c catalog` (alt+92 ='\')
-* revoke all access: `REVOKE ALL ON SCHEMA public FROM public;`
-* grant access to catalog: `GRANT ALL ON SCHEMA public TO catalog;`
+http://34.210.194.203/
