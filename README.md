@@ -101,4 +101,4 @@ STEP BY STEP COMMING SOON..
 
 ### Deploy the catalog project.
 
-http://34.210.194.203/
+ip soon
