@@ -100,7 +100,7 @@ Restart SSH: `sudo service ssh restart`.
         Give the permissions: chmod 700 .ssh and chmod 644 .ssh/authorized_keys
         Check in /etc/ssh/sshd_config file if PasswordAuthentication is set to no
         Restart SSH: sudo service ssh restart
-  - On the local machine, run: ssh -i ~/.ssh/grader_key -p 2200 grader@13.59.39.163.
+  - On the local machine, run: ssh -i ~/.ssh/grader_key -p 2200 grader@34.203.28.148.
 
 
 
