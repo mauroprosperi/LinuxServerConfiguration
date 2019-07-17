@@ -117,8 +117,35 @@ Restart SSH: `sudo service ssh restart`.
   
   - Enable `mod_wsgi` using: `sudo a2enmod wsgi`.
 
-  
+* Install and configure PostgreSQL
 
+  - While logged as `grader`, install: `sudo apt-get install postgresql`
+  
+  - PostgreSQL should not allow remote connections. In the  `/etc/postgresql/9.5/main/pg_hba.conf` file, you should see:
+    ```
+    local   all             postgres                                peer
+    local   all             all                                     peer
+    host    all             all             127.0.0.1/32            md5
+    host    all             all             ::1/128                 md5
+    ```
+  
+  - Enter as `postgres` user: `sudo su - postgres`.
+  - Now open the interactive terminal: `psql`
+  - Create the `catalog` user with a password and give him the ability to create databases:
+    ```
+    postgres=# CREATE ROLE catalog WITH LOGIN PASSWORD 'catalog';
+    postgres=# ALTER ROLE catalog CREATEDB;
+    ```
+  - Exit psql: `\q`
+  - Come back to the `grader` user writing: `exit`
+  - Create a new user named `catalog`with: `sudo adduser catalog` and fill the information.
+  - Give `catalog` sudo permission to sudo adding on this line:
+    ```
+    root    ALL=(ALL:ALL) ALL
+    grader  ALL=(ALL:ALL) ALL
+    catalog  ALL=(ALL:ALL) ALL
+    ```
+  
 * Ngnix
 
 We can use ngnix instead of Apache, configuration steps can be found here
