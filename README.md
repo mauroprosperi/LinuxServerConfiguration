@@ -63,6 +63,8 @@ Restart SSH: `sudo service ssh restart`.
 
 * Allow ports 80 (TCP), 123(Custom UDP), and 2200(Custom TCP), and deny the default port 22
 
+<img src="screens/aws_screen.png" width="600px">
+
 * You can now login as `ssh -i ~/.ssh/lightsail_key.rsa -p 2200 ubuntu@34.203.28.148` where 34.203.28.148 is the public IP of the instance
 
 ### User configuration
