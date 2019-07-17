@@ -145,7 +145,29 @@ Restart SSH: `sudo service ssh restart`.
     grader  ALL=(ALL:ALL) ALL
     catalog  ALL=(ALL:ALL) ALL
     ```
-  
+    
+* Create  a database while logged as `catalog`: `createdb catalog`
+
+  - Run `psql` and then `\l` to show the list of the databases. The output should be like this:
+   ```
+                                    List of databases
+     Name    |  Owner   | Encoding |   Collate   |    Ctype    |   Access privileges   
+  -----------+----------+----------+-------------+-------------+-----------------------
+   catalog   | catalog  | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+   postgres  | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+   template0 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+             |          |          |             |             | postgres=CTc/postgres
+   template1 | postgres | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/postgres          +
+             |          |          |             |             | postgres=CTc/postgres
+  (4 rows)
+   ```
+  - Exit psql: `\q`.
+  - Switch back of user using: `exit`.
+
+
+* Install Git
+  -While logged as `grader`, install `git`: `sudo apt-get install git`.
+
 * Ngnix
 
 We can use ngnix instead of Apache, configuration steps can be found here
