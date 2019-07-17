@@ -109,9 +109,19 @@ Restart SSH: `sudo service ssh restart`.
 
 ### Install and configure
 
+* Install And configure Apache with mod_wsgi
+  - While logged as grader, install Apache ```sudo apt-get install apache2```. Enter the IP in the browser if is working, you will see:
+  <img src="screens/apache_screen.png" width="600px">
+  
+  - Istall the Python 3 mod_wsgi package:  `sudo apt-get install libapache2-mod-wsgi-py3`.
+  
+  - Enable `mod_wsgi` using: `sudo a2enmod wsgi`.
+
+  
+
 * Ngnix
 
-We use ngnix instead of Apache, configuration steps can be found here
+We can use ngnix instead of Apache, configuration steps can be found here
 
 [ngix tutorial][2]
 
