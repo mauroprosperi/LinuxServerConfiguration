@@ -173,7 +173,8 @@ Restart SSH: `sudo service ssh restart`.
 ### Deploy
 
 * Clone the repository
-- While logged as `grader`, `create /var/www/catalog` directory.
+  - While logged as `grader`, `create /var/www/catalog` directory.
+  - Go to that directory and then clone the project; ´sudo git clone https://github.com/mauroprosperi/LinuxServerConfiguration.git catalog´
 
 * Ngnix
 
