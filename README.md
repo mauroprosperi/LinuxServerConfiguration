@@ -168,6 +168,13 @@ Restart SSH: `sudo service ssh restart`.
 * Install Git
   -While logged as `grader`, install `git`: `sudo apt-get install git`.
 
+
+
+### Deploy
+
+* Clone the repository
+- While logged as `grader`, `create /var/www/catalog` directory.
+
 * Ngnix
 
 We can use ngnix instead of Apache, configuration steps can be found here
