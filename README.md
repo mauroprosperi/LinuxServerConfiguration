@@ -190,6 +190,33 @@ Restart SSH: `sudo service ssh restart`.
   ```
   
 
+* Install dependencies
+
+- While logged in as `grader`, install pip: `sudo apt-get install python3-pip`.
+- Install the virtual environment: `sudo apt-get install python-virtualenv`
+- Change to the `/var/www/catalog/catalog/` directory.
+- Create the virtual environment: `sudo virtualenv -p python3 venv3`.
+- Change the ownership to `grader` with: `sudo chown -R grader:grader venv3/`.
+- Activate the new environment: `. venv3/bin/activate`.
+- Install the following dependencies:
+  ```
+  pip install httplib2
+  pip install requests
+  pip install --upgrade oauth2client
+  pip install sqlalchemy
+  pip install flask
+  sudo apt-get install libpq-dev
+  pip install psycopg2
+  ```
+
+- Run `python3 __init__.py` and you should see something like:
+  ```
+  * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+  ```
+
+- Deactivate the virtual environment: `deactivate`.
+
+
 
 * Ngnix
 
