@@ -174,7 +174,22 @@ Restart SSH: `sudo service ssh restart`.
 
 * Clone the repository
   - While logged as `grader`, `create /var/www/catalog` directory.
-  - Go to that directory and then clone the project; ´sudo git clone https://github.com/mauroprosperi/LinuxServerConfiguration.git catalog´
+  - Go to that directory and then clone the project; ´sudo git clone https://github.com/mauroprosperi/OAuth2.0.git catalog´
+  - Change the ownership of the directory `catalog` to `grader` using: `sudo cgown -R grader:grader catalog/`
+  - Here te main application file should name `__init__.py` but can have another name like `project.py`
+  
+  - in the start of the main application file you should replace or comment the line of run: 
+  ```
+  # app.run(host="0.0.0.0", port=8000, debug=True)
+  app.run()
+  ```
+  - In the python file of the database; `database_setup.py` you should change how the engine starts, in this case from    sqlite to postgresql;
+  ```
+  # engine = create_engine("sqlite:///catalog.db")
+  engine = create_engine('postgresql://catalog:PASSWORD@localhost/catalog')
+  ```
+  
+
 
 * Ngnix
 
